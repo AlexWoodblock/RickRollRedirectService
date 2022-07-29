@@ -1,0 +1,31 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.7.0'
+}
+
+group 'com.woodblockwithoutco'
+version '0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // SQL driver
+    implementation "org.postgresql:postgresql:42.4.0"
+
+    // Kotlin standard library
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+
+    // Ktor for server stuff
+    implementation "io.ktor:ktor-server-core:2.0.3"
+    implementation "io.ktor:ktor-server-netty:2.0.3"
+
+    // ORM
+    implementation "org.jetbrains.exposed:exposed-core:0.38.2"
+    implementation "org.jetbrains.exposed:exposed-dao:0.38.2"
+    implementation "org.jetbrains.exposed:exposed-jdbc:0.38.2"
+    implementation "org.jetbrains.exposed:exposed-java-time:0.38.2"
+
+    // Logging
+    implementation "ch.qos.logback:logback-classic:1.2.11"
+}
