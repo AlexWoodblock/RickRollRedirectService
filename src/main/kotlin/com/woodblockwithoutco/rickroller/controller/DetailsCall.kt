@@ -26,7 +26,7 @@ suspend fun PipelineContext<Unit, ApplicationCall>.handleDetailsCall(
 
     val durations = rickRollTrackingInteractor.getTimesAgoRickRolled()
     call.respondText {
-        durations.joinToString("\n\n") { duration ->
+        durations.asReversed().joinToString("\n\n") { duration ->
             val days = duration.toDaysPart()
             val hours = duration.toDaysPart()
             val minutes = duration.toMinutesPart()
