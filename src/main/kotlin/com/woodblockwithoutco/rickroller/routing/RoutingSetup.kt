@@ -24,6 +24,9 @@ fun Routing.setup(
     }
 
     get("/details") {
-        handleDetailsCall(rickRollTrackingInteractor)
+        handleDetailsCall(
+            rickRollTrackingInteractor = rickRollTrackingInteractor,
+            locale = locale
+        )
     }
 }
