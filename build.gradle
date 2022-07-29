@@ -22,6 +22,9 @@ jar {
     }
 }
 
+task stage(dependsOn: ['shadowJar', 'clean'])
+shadowJar.mustRunAfter clean
+
 dependencies {
     // SQL driver
     implementation "org.postgresql:postgresql:42.4.0"
