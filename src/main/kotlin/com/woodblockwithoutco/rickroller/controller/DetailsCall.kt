@@ -46,14 +46,14 @@ suspend fun PipelineContext<Unit, ApplicationCall>.handleDetailsCall(
         data.asReversed().joinToString("\n\n") { item ->
             val duration = item.durationAgo
             val days = duration.toDaysPart()
-            val hours = duration.toDaysPart()
+            val hours = duration.toHoursPart()
             val minutes = duration.toMinutesPart()
             val seconds = duration.toSecondsPart()
 
             val dateTimeFormatted = item.time.format(formatter)
 
             val durationFormatted = (days.toDurationPart("days") +
-                    hours.toDurationPart("hours") +
+                    hours.toLong().toDurationPart("hours") +
                     minutes.toLong().toDurationPart("minutes") +
                     seconds.toLong().toDurationPart("seconds")).trim()
 
