@@ -1,4 +1,5 @@
 plugins {
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'org.jetbrains.kotlin.jvm' version '1.7.0'
 }
 
@@ -7,6 +8,18 @@ version '0.1'
 
 repositories {
     mavenCentral()
+}
+
+shadowJar {
+    archiveBaseName.set('rickroller')
+    archiveClassifier.set('')
+    archiveVersion.set('')
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "com.woodblockwithoutco.rickroller.MainKt"
+    }
 }
 
 dependencies {
