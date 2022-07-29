@@ -5,6 +5,7 @@
 
 package com.woodblockwithoutco.rickroller.track
 
+import com.woodblockwithoutco.rickroller.data.RickRolledData
 import com.woodblockwithoutco.rickroller.db.RickRolledTable
 import com.woodblockwithoutco.rickroller.util.rethrowIfCancellation
 import kotlinx.coroutines.CoroutineDispatcher
@@ -76,12 +77,17 @@ class RickRollTrackingInteractor(
     /**
      * Get list of how long ago people were Rick Rolled.
      */
-    suspend fun getTimesAgoRickRolled(): List<Duration> {
+    suspend fun getRickRolledData(): List<RickRolledData> {
         return newSuspendedTransaction(ioDispatcher) {
             RickRolledTable.selectAll().map { resultRow ->
                 val time = resultRow[RickRolledTable.at]
 
-                Duration.between(time, LocalDateTime.now())
+                val durationAgo = Duration.between(time, LocalDateTime.now())
+
+                RickRolledData(
+                    durationAgo = durationAgo,
+                    time = time
+                )
             }
         }
     }

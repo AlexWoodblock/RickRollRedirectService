@@ -10,32 +10,54 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.response.respondText
 import io.ktor.util.pipeline.PipelineContext
+import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
+import java.time.format.DateTimeFormatter.ISO_LOCAL_TIME
+import java.time.format.DateTimeFormatterBuilder
+import java.util.*
 
 /**
  * Handles call to /details.
  */
 suspend fun PipelineContext<Unit, ApplicationCall>.handleDetailsCall(
-    rickRollTrackingInteractor: RickRollTrackingInteractor
+    rickRollTrackingInteractor: RickRollTrackingInteractor,
+    locale: Locale? = null
 ) {
 
-    fun Number.toDurationPart(name: String): String {
-        return takeIf { part -> part != 0 }?.let { part ->
+    val formatterBuilder = DateTimeFormatterBuilder()
+        .parseCaseInsensitive()
+        .append(ISO_LOCAL_DATE)
+        .appendLiteral(' ')
+        .append(ISO_LOCAL_TIME)
+
+    val formatter = if (locale != null) {
+        formatterBuilder.toFormatter(locale)
+    } else {
+        formatterBuilder.toFormatter()
+    }
+
+    fun Long.toDurationPart(name: String): String {
+        return takeIf { part -> part > 0 }?.let { part ->
             "$part $name "
         } ?: ""
     }
 
-    val durations = rickRollTrackingInteractor.getTimesAgoRickRolled()
+    val data = rickRollTrackingInteractor.getRickRolledData()
     call.respondText {
-        durations.asReversed().joinToString("\n\n") { duration ->
+        data.asReversed().joinToString("\n\n") { item ->
+            val duration = item.durationAgo
             val days = duration.toDaysPart()
             val hours = duration.toDaysPart()
             val minutes = duration.toMinutesPart()
             val seconds = duration.toSecondsPart()
 
-            ("* ${days.toDurationPart("days")}" +
+            val dateTimeFormatted = item.time.format(formatter)
+
+            val durationFormatted = (days.toDurationPart("days") +
                     hours.toDurationPart("hours") +
-                    minutes.toDurationPart("minutes") +
-                    seconds.toDurationPart("seconds")).trim()
+                    minutes.toLong().toDurationPart("minutes") +
+                    seconds.toLong().toDurationPart("seconds")).trim()
+
+            "* $dateTimeFormatted ($durationFormatted)"
         }
     }
 }

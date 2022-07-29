@@ -10,12 +10,14 @@ import com.woodblockwithoutco.rickroller.controller.handleDetailsCall
 import com.woodblockwithoutco.rickroller.track.RickRollTrackingInteractor
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
+import java.util.Locale
 
 /**
  * Setup the application routing.
  */
 fun Routing.setup(
-    rickRollTrackingInteractor: RickRollTrackingInteractor
+    rickRollTrackingInteractor: RickRollTrackingInteractor,
+    locale: Locale? = null
 ) {
     get("/") {
         handleDefaultGetCall(rickRollTrackingInteractor)

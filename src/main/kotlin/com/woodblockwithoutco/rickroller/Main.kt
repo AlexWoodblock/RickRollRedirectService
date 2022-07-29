@@ -14,12 +14,22 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.routing.routing
 import org.slf4j.LoggerFactory
+import java.util.Locale
 
 /**
  * Main entry point for our Rick Roll Redirect Service.
  */
 fun main() {
     updateLogLevel()
+
+    val location: String? = System.getenv(LOCALE_COUNTRY)
+    val lang: String? = System.getenv(LOCALE_LANG)
+
+    val locale = if (location != null && lang != null) {
+        Locale(lang, location)
+    } else {
+        null
+    }
 
     val port = System.getenv(PORT_NAME)?.toIntOrNull() ?: DEFAULT_PORT
 
@@ -30,7 +40,12 @@ fun main() {
     createDatabase(dbUrl)
     val rickRollTrackingInteractor = createAndPrepareRickRollTrackingInteractor()
     embeddedServer(Netty, port) {
-        routing { setup(rickRollTrackingInteractor = rickRollTrackingInteractor) }
+        routing {
+            setup(
+                rickRollTrackingInteractor = rickRollTrackingInteractor,
+                locale = locale
+            )
+        }
     }.start(wait = true)
 }
 
@@ -49,3 +64,5 @@ private val isDebug: Boolean
 private const val DATABASE_URL_NAME = "JDBC_DATABASE_URL"
 private const val DEFAULT_PORT = 8080
 private const val PORT_NAME = "PORT"
+private const val LOCALE_COUNTRY = "LOCALE_COUNTRY"
+private const val LOCALE_LANG = "LOCALE_LANG"
